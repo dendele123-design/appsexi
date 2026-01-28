@@ -2,10 +2,10 @@ import streamlit as st
 import random
 import time
 
-# --- CONFIGURAZIONE PAGINA ---
+# --- CONFIGURAZIONE ---
 st.set_page_config(page_title="Love Game", page_icon="🔥")
 
-# --- CSS PER PULIZIA GRAFICA ---
+# --- CSS (NO MENU) ---
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden !important;}
@@ -22,104 +22,129 @@ st.title("🔥 I Dadi del Destino")
 st.write("Azione piccante o Penalità tremenda? Tenta la fortuna...")
 st.divider()
 
-# --- LISTE PERSONALIZZABILI ---
-# Modifica queste frasi come preferisci!
+# ==========================================
+#      AREA DI PERSONALIZZAZIONE LISTE
+# ==========================================
 
-azioni = [
-    "Dai un bacio appassionato su...",
-    "Fai un massaggio di 2 minuti a...",
-    "Sussurra una cosa sporca a...",
+# ------------------------------------------
+# SCENARIO A: TOCCA A LUI (Lui agisce su di Lei)
+# ------------------------------------------
+azioni_turno_lui = [
+    "Dai un bacio lungo su...",
+    "Massaggia delicatamente...",
     "Usa la lingua su...",
-    "Mordicchia delicatamente...",
-    "Accarezza lentamente...",
-    "Lecca via un po' di panna/cioccolato da..."
+    "Sussurra qualcosa all'orecchio mentre tocchi...",
+    "Mordi piano..."
 ]
 
-zone = [
+zone_su_lei = [
     "Collo",
-    "Orecchio",
-    "Schiena",
+    "Seno",
     "Interno coscia",
-    "Piedi",
-    "Ombelico",
-    "Dove preferisce il partner"
+    "Lobo dell'orecchio",
+    "Fianchi",
+    "Dove lei preferisce"
 ]
 
+# ------------------------------------------
+# SCENARIO B: TOCCA A LEI (Lei agisce su di Lui)
+# ------------------------------------------
+azioni_turno_lei = [
+    "Bacia con passione...",
+    "Graffia leggermente...",
+    "Accarezza con le unghie...",
+    "Lecca via un po' di panna da...",
+    "Stringi con le mani..."
+]
+
+zone_su_lui = [
+    "Collo",
+    "Pettorali",
+    "Addominali",
+    "Interno coscia",
+    "Schiena",
+    "Dove lui preferisce"
+]
+
+# ------------------------------------------
+# BONUS E PENALITÀ (Validi per tutti o divisi)
+# ------------------------------------------
 bonus_extra = [
     "Bendando il partner 🙈",
     "Usando un cubetto di ghiaccio 🧊",
     "Senza usare le mani 🚫🖐️",
     "Con la luce spenta 🌑",
-    "Mentre il partner ti guarda negli occhi 👀"
+    "Mentre ti guarda negli occhi 👀"
 ]
 
-# --- LE PENALITÀ (CATTIVE!) ---
-penalita_lui = [
+penalita_per_lui = [
     "⛔ SEI IL SUO SCHIAVO: Per 2 minuti devi fare tutto ciò che lei ordina.",
-    "⛔ STOP: Non puoi toccarla per 3 minuti (ma lei può toccare te).",
+    "⛔ STOP: Non puoi toccarla per 3 minuti.",
     "⛔ STRIP: Togliti un indumento a sua scelta.",
-    "⛔ APRI IL FRIGO: Vai a prepararle un drink o uno snack.",
-    "⛔ BENDA: Fatti bendare e rimani immobile per 2 turni."
+    "⛔ COCKTAIL: Vai a prepararle da bere."
 ]
 
-penalita_lei = [
+penalita_per_lei = [
     "⛔ SEI LA SUA SCHIAVA: Per 2 minuti devi fare tutto ciò che lui ordina.",
-    "⛔ STOP: Non puoi toccarlo per 3 minuti (ma lui può toccare te).",
+    "⛔ STOP: Non puoi toccarlo per 3 minuti.",
     "⛔ STRIP: Togliti un indumento a sua scelta.",
-    "⛔ SPETTACOLO: Improvvisa un ballo sexy per 30 secondi.",
-    "⛔ BENDA: Fatti bendare e rimani immobile per 2 turni."
+    "⛔ SPETTACOLO: Ballo sexy per 30 secondi."
 ]
+
+# ==========================================
+#      FINE AREA PERSONALIZZAZIONE
+# ==========================================
 
 # --- SELEZIONE GIOCATORE ---
 col1, col2 = st.columns(2)
 with col1:
-    # Usiamo un radio button per decidere di chi è il turno
-    giocatore = st.radio("Di chi è il turno?", ["Tocca a LUI 👨", "Tocca a LEI 👩"])
+    giocatore = st.radio("Di chi è il turno (Chi agisce)?", ["Tocca a LUI 👨", "Tocca a LEI 👩"])
 
 st.divider()
 
-# --- IL MOTORE DEL GIOCO ---
+# --- MOTORE DI GIOCO ---
 if st.button("🎲 LANCIA I DADI 🎲", type="primary", use_container_width=True):
     
-    # 1. Suspense (Barra caricamento)
+    # Animazione
     progress_text = "Il destino sta decidendo..."
     my_bar = st.progress(0, text=progress_text)
     for percent_complete in range(100):
-        time.sleep(0.01) # Velocità dell'animazione
+        time.sleep(0.01)
         my_bar.progress(percent_complete + 1, text=progress_text)
     my_bar.empty()
     
-    # 2. Calcolo Probabilità: Sarà una Penalità? (15% di probabilità)
-    # random.random() genera un numero tra 0.0 e 1.0. Se è minore di 0.15 scatta la penalità.
+    # --- LOGICA DI ESTRAZIONE ---
+    
+    # 1. Controlliamo se scatta la PENALITÀ (15% probabilità)
     if random.random() < 0.15:
-        # --- CASO PENALITÀ ---
-        
-        # Scegliamo la lista giusta in base al giocatore
         if "LUI" in giocatore:
-            penitenza = random.choice(penalita_lui)
+            penitenza = random.choice(penalita_per_lui)
         else:
-            penitenza = random.choice(penalita_lei)
-        
-        # Mostriamo il box ROSSO (error)
+            penitenza = random.choice(penalita_per_lei)
+            
         st.error("😱 OH NO! PENALITÀ!")
         st.header(penitenza)
-        st.caption("E non puoi rifiutarti!")
         
     else:
-        # --- CASO NORMALE ---
-        
-        azione_estratta = random.choice(azioni)
-        zona_estratta = random.choice(zone)
-        
+        # 2. Se non è penalità, scegliamo AZIONE + ZONA in base a chi gioca
+        if "LUI" in giocatore:
+            # Tocca a Lui -> Usa le liste per Lui
+            azione = random.choice(azioni_turno_lui)
+            zona = random.choice(zone_su_lei)
+        else:
+            # Tocca a Lei -> Usa le liste per Lei
+            azione = random.choice(azioni_turno_lei)
+            zona = random.choice(zone_su_lui)
+            
         st.success("✅ Via libera!")
-        st.subheader(f"{azione_estratta}")
-        st.header(f"👉 {zona_estratta}")
+        st.subheader(f"{azione}")
+        st.header(f"👉 {zona}")
         
-        # 20% di probabilità di BONUS extra
+        # 3. Bonus Extra (20% probabilità)
         if random.random() < 0.20:
             bonus = random.choice(bonus_extra)
             st.warning(f"🔥 **BONUS:** {bonus}")
 
-# --- Footer ---
+# --- FOOTER ---
 st.divider()
-st.caption("Divertitevi con prudenza 😉")
+st.caption("Buon divertimento!")
