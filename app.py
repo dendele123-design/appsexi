@@ -2,90 +2,70 @@ import streamlit as st
 import random
 import time
 
-# --- CONFIGURAZIONE E CSS (Soliti) ---
-st.set_page_config(page_title="Love Game", page_icon="🔥")
-hide_st_style = """<style>#MainMenu {visibility: hidden !important;} header {visibility: hidden !important;} footer {visibility: hidden !important;} .stAppDeployButton {display: none !important;} [data-testid="stStatusWidget"] {visibility: hidden !important;}</style>"""
-st.markdown(hide_st_style, unsafe_allow_html=True)
+# --- CONFIGURAZIONE ---
+st.set_page_config(page_title="Secret Game", page_icon="🔞")
 
-st.title("🔥 I Dadi del Destino 2.0")
-st.write("Logica migliorata: le azioni ora hanno senso!")
+# CSS Aggressivo per nascondere tutto il superfluo
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stAppDeployButton {display:none;}
+    [data-testid="stStatusWidget"] {visibility: hidden;}
+    </style>
+    """, unsafe_allow_html=True)
+
+st.title("🔞 Secret Game: The Dice")
+st.write("Solo per adulti. Scegli il livello di sfida.")
 st.divider()
 
 # ==========================================
-#      NUOVA LOGICA DELLE LISTE
+#      LE TUE LISTE DI AZIONI COMPLETE
 # ==========================================
 
-# --- LISTE PER LUI (Lui agisce su Lei) ---
-azioni_semplici_lui = ["Bacia...", "Lecca...", "Accarezza...", "Mordi piano...", "Sussurra qualcosa su..."]
-zone_lei = ["Collo", "Seno", "Interno coscia", "Orecchio", "Ombelico"]
-
-azioni_complete_lui = [
-    "Usa la cinta sul suo sedere 🍑",
-    "Passa un cubetto di ghiaccio sulla sua pancia 🧊",
-    "Falle uno striptease integrale 🕺",
-    "Bendala e gioca con la lingua su di lei 👅"
+azioni_standard = [
+    "Fai un massaggio di 2 minuti sulle spalle del partner 💆‍♂️",
+    "Bacia il partner in 3 punti diversi del viso 💋",
+    "Sussurra un segreto imbarazzante all'orecchio 👂",
+    "Fai uno spuntino sexy dividendo un frutto con la bocca 🍓",
+    "Balla un lento (senza musica) abbracciati stretti 💃"
 ]
 
-# --- LISTE PER LEI (Lei agisce su Lui) ---
-azioni_semplici_lei = ["Bacia...", "Lecca...", "Graffia...", "Mordi...", "Accarezza con le unghie..."]
-zone_lui = ["Collo", "Pettorali", "Addominali", "Schiena", "Barba"]
-
-azioni_complete_lei = [
-    "Usa la cinta per legargli le mani ⛓️",
-    "Versa una goccia di vino sul suo petto e lecca via 🍷",
-    "Fagli un massaggio con l'olio sulla schiena 🧴",
-    "Siediti sopra di lui, di schiena ✨"
+# QUI AGGIUNGERAI LE TUE COSE "BOLLINO ROSSO"
+azioni_bollino_rosso = [
+    "Usa la tua cinta per legare le mani del partner ⛓️",
+    "Passa un cubetto di ghiaccio ovunque lei/lui desideri 🧊",
+    "Togli un indumento al partner usando solo i denti 🦷",
+    "Fai uno striptease integrale al ritmo della tua canzone preferita 🎶",
+    "Sperimenta una nuova posizione per 1 minuto (vestiti) 🔥"
 ]
 
-# --- PENALITÀ ---
-penalita_lui = ["⛔ Fai tutto quello che lei ti ordina per 2 min", "⛔ Togliti 2 indumenti"]
-penalita_lei = ["⛔ Fai tutto quello che lui ti ordina per 2 min", "⛔ Togliti 2 indumenti"]
+# --- INTERFACCIA ---
 
-# ==========================================
+livello = st.select_slider(
+    "Seleziona l'intensità:",
+    options=["Standard 😇", "Bollino Rosso 🔥"]
+)
 
-# --- SELEZIONE GIOCATORE ---
-giocatore = st.radio("Di chi è il turno?", ["Tocca a LUI 👨", "Tocca a LEI 👩"], horizontal=True)
 st.divider()
 
-if st.button("🎲 LANCIA I DADI 🎲", type="primary", use_container_width=True):
+if st.button("ESTRAI LA SFIDA 🎲", type="primary", use_container_width=True):
     
     # Animazione suspense
-    progress_text = "Il destino sta scegliendo un'azione sensata..."
-    my_bar = st.progress(0, text=progress_text)
-    for p in range(100):
-        time.sleep(0.01)
-        my_bar.progress(p + 1, text=progress_text)
-    my_bar.empty()
-
-    # --- LOGICA DI ESTRAZIONE SMART ---
+    with st.spinner("Il destino sta scegliendo..."):
+        time.sleep(1.2)
     
-    scelta_tipo = random.random() # Genera numero tra 0 e 1
-
-    if scelta_tipo < 0.15:
-        # 1. PENALITÀ (15% di probabilità)
-        res = random.choice(penalita_lui if "LUI" in giocatore else penalita_lei)
-        st.error(f"😱 PENALITÀ!\n\n{res}")
-
-    elif scelta_tipo < 0.50:
-        # 2. AZIONE COMPLETA (35% di probabilità: da 0.15 a 0.50)
-        # Queste sono le frasi tipo "Usa la cinta sul sedere"
-        res = random.choice(azioni_complete_lui if "LUI" in giocatore else azioni_complete_lei)
-        st.success("✅ AZIONE SPECIALE!")
-        st.header(res)
-
+    # Scelta della lista in base allo slider
+    if "Standard" in livello:
+        sfida = random.choice(azioni_standard)
+        st.success("✨ SFIDA STANDARD")
+        st.header(sfida)
     else:
-        # 3. AZIONE SEMPLICE + ZONA (50% di probabilità)
-        # Queste sono le classiche "Bacia" + "Collo"
-        if "LUI" in giocatore:
-            act = random.choice(azioni_semplici_lui)
-            body = random.choice(zone_lei)
-        else:
-            act = random.choice(azioni_semplici_lei)
-            body = random.choice(zone_lui)
-            
-        st.success("✅ AZIONE NORMALE")
-        st.subheader(act)
-        st.header(f"👉 {body}")
+        sfida = random.choice(azioni_bollino_rosso)
+        # Usiamo un box rosso per il bollino rosso
+        st.error("🔥 BOLLINO ROSSO!")
+        st.markdown(f"<h1 style='text-align: center; color: #ff4b4b;'>{sfida}</h1>", unsafe_allow_html=True)
 
 st.divider()
-st.caption("Ora le azioni sono divise tra semplici e complete per evitare 'errori' anatomici!")
+st.caption("Usa questa app responsabilmente in un ambiente privato.")
