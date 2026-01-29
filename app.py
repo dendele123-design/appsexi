@@ -20,10 +20,10 @@ azioni_semplici_lui = ["Bacia...", "Lecca...", "Accarezza...", "Mordi piano...",
 zone_lei = ["Collo", "Seno", "Interno coscia", "Orecchio", "Ombelico"]
 
 azioni_complete_lui = [
-    "Usa la cinta (delicatamente) sul suo sedere 🍑",
+    "Usa la cinta sul suo sedere 🍑",
     "Passa un cubetto di ghiaccio sulla sua pancia 🧊",
     "Falle uno striptease integrale 🕺",
-    "Benda lei e falle assaggiare qualcosa di dolce 🍬"
+    "Bendala e gioca con la lingua su di lei 👅"
 ]
 
 # --- LISTE PER LEI (Lei agisce su Lui) ---
@@ -31,10 +31,10 @@ azioni_semplici_lei = ["Bacia...", "Lecca...", "Graffia...", "Mordi...", "Accare
 zone_lui = ["Collo", "Pettorali", "Addominali", "Schiena", "Barba"]
 
 azioni_complete_lei = [
-    "Usa la cinta per legargli le mani (se lui vuole) ⛓️",
+    "Usa la cinta per legargli le mani ⛓️",
     "Versa una goccia di vino sul suo petto e lecca via 🍷",
     "Fagli un massaggio con l'olio sulla schiena 🧴",
-    "Siediti sopra di lui e guardalo negli occhi per 1 minuto 👀"
+    "Siediti sopra di lui, di schiena ✨"
 ]
 
 # --- PENALITÀ ---
