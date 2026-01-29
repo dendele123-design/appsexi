@@ -2,149 +2,90 @@ import streamlit as st
 import random
 import time
 
-# --- CONFIGURAZIONE ---
+# --- CONFIGURAZIONE E CSS (Soliti) ---
 st.set_page_config(page_title="Love Game", page_icon="🔥")
-
-# --- CSS (NO MENU) ---
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden !important;}
-            header {visibility: hidden !important;}
-            footer {visibility: hidden !important;}
-            .stAppDeployButton {display: none !important;}
-            [data-testid="stStatusWidget"] {visibility: hidden !important;}
-            </style>
-            """
+hide_st_style = """<style>#MainMenu {visibility: hidden !important;} header {visibility: hidden !important;} footer {visibility: hidden !important;} .stAppDeployButton {display: none !important;} [data-testid="stStatusWidget"] {visibility: hidden !important;}</style>"""
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# --- TITOLO ---
-st.title("🔥 I Dadi del Destino")
-st.write("Azione piccante o Penalità tremenda? Tenta la fortuna...")
+st.title("🔥 I Dadi del Destino 2.0")
+st.write("Logica migliorata: le azioni ora hanno senso!")
 st.divider()
 
 # ==========================================
-#      AREA DI PERSONALIZZAZIONE LISTE
+#      NUOVA LOGICA DELLE LISTE
 # ==========================================
 
-# ------------------------------------------
-# SCENARIO A: TOCCA A LUI (Lui agisce su di Lei)
-# ------------------------------------------
-azioni_turno_lui = [
-    "Dai un bacio lungo su...",
-    "Massaggia delicatamente...",
-    "Usa la lingua su...",
-    "Sussurra qualcosa all'orecchio mentre tocchi...",
-    "Mordi piano..."
+# --- LISTE PER LUI (Lui agisce su Lei) ---
+azioni_semplici_lui = ["Bacia...", "Lecca...", "Accarezza...", "Mordi piano...", "Sussurra qualcosa su..."]
+zone_lei = ["Collo", "Seno", "Interno coscia", "Orecchio", "Ombelico"]
+
+azioni_complete_lui = [
+    "Usa la cinta (delicatamente) sul suo sedere 🍑",
+    "Passa un cubetto di ghiaccio sulla sua pancia 🧊",
+    "Falle uno striptease integrale 🕺",
+    "Benda lei e falle assaggiare qualcosa di dolce 🍬"
 ]
 
-zone_su_lei = [
-    "Collo",
-    "Seno",
-    "Interno coscia",
-    "Lobo dell'orecchio",
-    "Fianchi",
-    "Dove lei preferisce"
+# --- LISTE PER LEI (Lei agisce su Lui) ---
+azioni_semplici_lei = ["Bacia...", "Lecca...", "Graffia...", "Mordi...", "Accarezza con le unghie..."]
+zone_lui = ["Collo", "Pettorali", "Addominali", "Schiena", "Barba"]
+
+azioni_complete_lei = [
+    "Usa la cinta per legargli le mani (se lui vuole) ⛓️",
+    "Versa una goccia di vino sul suo petto e lecca via 🍷",
+    "Fagli un massaggio con l'olio sulla schiena 🧴",
+    "Siediti sopra di lui e guardalo negli occhi per 1 minuto 👀"
 ]
 
-# ------------------------------------------
-# SCENARIO B: TOCCA A LEI (Lei agisce su di Lui)
-# ------------------------------------------
-azioni_turno_lei = [
-    "Bacia con passione...",
-    "Graffia leggermente...",
-    "Accarezza con le unghie...",
-    "Lecca via un po' di panna da...",
-    "Stringi con le mani..."
-]
+# --- PENALITÀ ---
+penalita_lui = ["⛔ Fai tutto quello che lei ti ordina per 2 min", "⛔ Togliti 2 indumenti"]
+penalita_lei = ["⛔ Fai tutto quello che lui ti ordina per 2 min", "⛔ Togliti 2 indumenti"]
 
-zone_su_lui = [
-    "Collo",
-    "Pettorali",
-    "Addominali",
-    "Interno coscia",
-    "Schiena",
-    "Dove lui preferisce"
-]
-
-# ------------------------------------------
-# BONUS E PENALITÀ (Validi per tutti o divisi)
-# ------------------------------------------
-bonus_extra = [
-    "Bendando il partner 🙈",
-    "Usando un cubetto di ghiaccio 🧊",
-    "Senza usare le mani 🚫🖐️",
-    "Con la luce spenta 🌑",
-    "Mentre ti guarda negli occhi 👀"
-]
-
-penalita_per_lui = [
-    "⛔ SEI IL SUO SCHIAVO: Per 2 minuti devi fare tutto ciò che lei ordina.",
-    "⛔ STOP: Non puoi toccarla per 3 minuti.",
-    "⛔ STRIP: Togliti un indumento a sua scelta.",
-    "⛔ COCKTAIL: Vai a prepararle da bere."
-]
-
-penalita_per_lei = [
-    "⛔ SEI LA SUA SCHIAVA: Per 2 minuti devi fare tutto ciò che lui ordina.",
-    "⛔ STOP: Non puoi toccarlo per 3 minuti.",
-    "⛔ STRIP: Togliti un indumento a sua scelta.",
-    "⛔ SPETTACOLO: Ballo sexy per 30 secondi."
-]
-
-# ==========================================
-#      FINE AREA PERSONALIZZAZIONE
 # ==========================================
 
 # --- SELEZIONE GIOCATORE ---
-col1, col2 = st.columns(2)
-with col1:
-    giocatore = st.radio("Di chi è il turno (Chi agisce)?", ["Tocca a LUI 👨", "Tocca a LEI 👩"])
-
+giocatore = st.radio("Di chi è il turno?", ["Tocca a LUI 👨", "Tocca a LEI 👩"], horizontal=True)
 st.divider()
 
-# --- MOTORE DI GIOCO ---
 if st.button("🎲 LANCIA I DADI 🎲", type="primary", use_container_width=True):
     
-    # Animazione
-    progress_text = "Il destino sta decidendo..."
+    # Animazione suspense
+    progress_text = "Il destino sta scegliendo un'azione sensata..."
     my_bar = st.progress(0, text=progress_text)
-    for percent_complete in range(100):
+    for p in range(100):
         time.sleep(0.01)
-        my_bar.progress(percent_complete + 1, text=progress_text)
+        my_bar.progress(p + 1, text=progress_text)
     my_bar.empty()
-    
-    # --- LOGICA DI ESTRAZIONE ---
-    
-    # 1. Controlliamo se scatta la PENALITÀ (15% probabilità)
-    if random.random() < 0.15:
-        if "LUI" in giocatore:
-            penitenza = random.choice(penalita_per_lui)
-        else:
-            penitenza = random.choice(penalita_per_lei)
-            
-        st.error("😱 OH NO! PENALITÀ!")
-        st.header(penitenza)
-        
-    else:
-        # 2. Se non è penalità, scegliamo AZIONE + ZONA in base a chi gioca
-        if "LUI" in giocatore:
-            # Tocca a Lui -> Usa le liste per Lui
-            azione = random.choice(azioni_turno_lui)
-            zona = random.choice(zone_su_lei)
-        else:
-            # Tocca a Lei -> Usa le liste per Lei
-            azione = random.choice(azioni_turno_lei)
-            zona = random.choice(zone_su_lui)
-            
-        st.success("✅ Via libera!")
-        st.subheader(f"{azione}")
-        st.header(f"👉 {zona}")
-        
-        # 3. Bonus Extra (20% probabilità)
-        if random.random() < 0.20:
-            bonus = random.choice(bonus_extra)
-            st.warning(f"🔥 **BONUS:** {bonus}")
 
-# --- FOOTER ---
+    # --- LOGICA DI ESTRAZIONE SMART ---
+    
+    scelta_tipo = random.random() # Genera numero tra 0 e 1
+
+    if scelta_tipo < 0.15:
+        # 1. PENALITÀ (15% di probabilità)
+        res = random.choice(penalita_lui if "LUI" in giocatore else penalita_lei)
+        st.error(f"😱 PENALITÀ!\n\n{res}")
+
+    elif scelta_tipo < 0.50:
+        # 2. AZIONE COMPLETA (35% di probabilità: da 0.15 a 0.50)
+        # Queste sono le frasi tipo "Usa la cinta sul sedere"
+        res = random.choice(azioni_complete_lui if "LUI" in giocatore else azioni_complete_lei)
+        st.success("✅ AZIONE SPECIALE!")
+        st.header(res)
+
+    else:
+        # 3. AZIONE SEMPLICE + ZONA (50% di probabilità)
+        # Queste sono le classiche "Bacia" + "Collo"
+        if "LUI" in giocatore:
+            act = random.choice(azioni_semplici_lui)
+            body = random.choice(zone_lei)
+        else:
+            act = random.choice(azioni_semplici_lei)
+            body = random.choice(zone_lui)
+            
+        st.success("✅ AZIONE NORMALE")
+        st.subheader(act)
+        st.header(f"👉 {body}")
+
 st.divider()
-st.caption("Buon divertimento!")
+st.caption("Ora le azioni sono divise tra semplici e complete per evitare 'errori' anatomici!")
